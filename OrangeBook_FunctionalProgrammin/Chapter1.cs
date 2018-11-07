@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -34,6 +38,8 @@ namespace OrangeBook_FunctionalProgrammin
         [TestClass]
         public class AvoidingStateMutation
         {
+            public TestContext TestContext { get; set; }
+
             [TestMethod]
             public void FunctionalExample()
             {
@@ -66,27 +72,119 @@ namespace OrangeBook_FunctionalProgrammin
                 
             }
 
+            [Ignore]
             [TestMethod]
             public void MutatingStateFromConcurrentProcesses_UnpredictableResults()
             {
                 //Arrange
-                var nums = Enumerable.Range(-10000, 20001).ToList();
+                var writeLineStringBuilder = new StringBuilder();
 
-                int t1Sum = 89;
-                int t2Sum  = 89;
+                using (TextWriter writer = new StringWriter(writeLineStringBuilder))
+                {
+                    var nums = Enumerable.Range(-10000, 20001).ToList();
+
+                    //Console.SetOut(writer);
+
+                    Action t1 = () => Console.WriteLine(nums.Sum());
+
+                    Action t2 = () => { nums.Sort(); Console.WriteLine(nums.Sum()); };
+
+                    //Act
+                    Parallel.Invoke(t2, t1);
+                    
+                    //Assert
+                    string[] newline = new string[] { Environment.NewLine };
+                    var results = writeLineStringBuilder.ToString().Split(newline, StringSplitOptions.RemoveEmptyEntries);
+
+                    Convert.ToInt32(results[0]).Should().NotBe(0); //should be inconsistent
+                    Convert.ToInt32(results[1]).Should().Be(0);
+                }
+            }
+
+            [TestMethod]
+            public void MutatingStateFromConcurrentProcesses_PredictableResults()
+            {
+                //Arrange
+                var writeLineStringBuilder = new StringBuilder();
+
+                using (TextWriter writer = new StringWriter(writeLineStringBuilder))
+                {
+                    var nums = Enumerable.Range(-10000, 20001).ToList();
+
+                    Console.SetOut(writer);
+
+                    Action t1 = () => Console.WriteLine(nums.Sum());
+
+                    Action t3 = () => { Console.WriteLine(nums.OrderBy(x => x).Sum()); };
+
+                    //Act
+                    Parallel.Invoke(t1, t3);
 
 
-                Action t1 = () =>  Console.WriteLine(nums.Sum());
+                    //Assert
+                    string[] newline = new string[] { Environment.NewLine };
+                    var results = writeLineStringBuilder.ToString().Split(newline, StringSplitOptions.RemoveEmptyEntries);
 
-                Action t2 = () => { nums.Sort(); Console.WriteLine(nums.Sum()); };
+                    Convert.ToInt32(results[0]).Should().Be(0);
+                    Convert.ToInt32(results[1]).Should().Be(0);
+                }
 
-                //Act
-                Parallel.Invoke(t1, t2);
 
-                //Assert
 
             }
-           
+
         }
+
+        [TestClass]
+        public class HigherOrderFunctions
+        {
+            [TestMethod]
+            public void AdapterFunctions()
+            {
+                //Arrange
+                Func<double, double, double> divide = (x, y) => x / y;
+
+
+                //Act
+                var beforeSwap = divide(10, 2);
+
+                var afterSwapDivideBy = divide.SwapArgs();
+                var afterSwap = afterSwapDivideBy(10, 2);
+
+
+                //Assert
+                beforeSwap.Should().Be(5);
+                afterSwap.Should().NotBe(5);
+                afterSwap.Should().Be(0.2);
+
+
+            }
+
+            [TestMethod]
+            public void FunctionsThatCreateFunctions()
+            {
+                //Arrange
+                Func<int, bool> isModulus(int n) => i => (i % n == 0);
+
+                //Act
+                var range1 = Enumerable.Range(1, 20).Where(isModulus(2));
+                var range2 = Enumerable.Range(1, 20).Where(isModulus(3));
+
+                //Assert
+                range1.Should().BeEquivalentTo(2, 4, 6, 8, 10, 12, 14, 16, 18, 20 );
+                range2.Should().BeEquivalentTo(3,6,9,12,15,18);
+            }
+
+
+        }
+
+
     }
+
+    public static class ExtensionsForTests
+    {
+        public static Func<T2, T1, R> SwapArgs<T2, T1, R>(this Func<T1, T2, R> f)
+            => (t2, t1) => f(t1, t2);
+    }
+
 }
