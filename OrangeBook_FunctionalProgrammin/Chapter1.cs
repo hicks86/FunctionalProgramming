@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
+using OrangeBook_FunctionalProgrammin.Helpers;
 
 namespace OrangeBook_FunctionalProgrammin
 {
@@ -175,7 +176,27 @@ namespace OrangeBook_FunctionalProgrammin
                 range2.Should().BeEquivalentTo(3,6,9,12,15,18);
             }
 
+            [TestMethod]
+            public void EncapsulateSetupAndTearDownOperations_Before()
+            {
+                using (var conn = new Mocks.MockSqlConnection("someConnString"))
+                {
+                    conn.Open();
 
+                    var result = conn.Execute("SELECT * FROM Users");
+
+                    Assert.IsNotNull(result);
+                }
+            }
+
+            [TestMethod]
+            public void EncapsulateSetupAndTearDownOperations_AfterHoleInTheMiddlePattern()
+            {
+                var result = ConnectionHelper.Connect("someConnString"
+                                                        , c => c.Execute("SELECT * FROM Users"));
+
+                Assert.IsNotNull(result);
+            }
         }
 
 

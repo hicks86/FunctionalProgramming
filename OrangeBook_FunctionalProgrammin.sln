@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.28010.2048
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrangeBook_FunctionalProgramming", "OrangeBook_FunctionalProgrammin\OrangeBook_FunctionalProgramming.csproj", "{E80AB963-85A8-43EC-A8F6-D3194192E637}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BmiCalculator_Chapter2", "BmiCalculator_Chapter2\BmiCalculator_Chapter2.csproj", "{1BCE282A-E1E9-4771-B796-2576C862379A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BmiCalculator_Chapter2.UnitTests", "BmiCalculator_Chapter2.UnitTests\BmiCalculator_Chapter2.UnitTests.csproj", "{B9E2E75B-89DD-4649-8252-297DDCEC9AED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{E80AB963-85A8-43EC-A8F6-D3194192E637}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E80AB963-85A8-43EC-A8F6-D3194192E637}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E80AB963-85A8-43EC-A8F6-D3194192E637}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BCE282A-E1E9-4771-B796-2576C862379A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BCE282A-E1E9-4771-B796-2576C862379A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BCE282A-E1E9-4771-B796-2576C862379A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BCE282A-E1E9-4771-B796-2576C862379A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9E2E75B-89DD-4649-8252-297DDCEC9AED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9E2E75B-89DD-4649-8252-297DDCEC9AED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9E2E75B-89DD-4649-8252-297DDCEC9AED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9E2E75B-89DD-4649-8252-297DDCEC9AED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
